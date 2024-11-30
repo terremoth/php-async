@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<ruleset xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" name="Standard"
+         xsi:noNamespaceSchemaLocation="vendor/squizlabs/php_codesniffer/phpcs.xsd">
+    <description>Vendor Coding Style</description>
+    <arg name="colors"/>
+    <rule ref="PSR12">
+        <type>error</type>
+    </rule>
+    <file>src</file>
+    <file>tests</file>
+    <file>demos</file>
+</ruleset>

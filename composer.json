@@ -1,0 +1,56 @@
+{
+    "name": "terremoth/",
+    "description": "",
+    "type": "library",
+    "require": {
+        "php": "^8.1"
+    },
+    "keywords": [
+        "project-template",
+    ],
+    "require-dev": {
+        "phpunit/phpunit": "^10.0",
+        "vimeo/psalm": "^5.0",
+        "nikic/php-parser": "^4.10",
+        "squizlabs/php_codesniffer": "*",
+        "phpmd/phpmd": "@stable"
+    },
+    "license": "GPL-3.0-or-later",
+    "autoload": {
+        "psr-4": {
+            "\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "terremoth",
+            "email": "dutra.astro@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "scripts": {
+        "fix": "vendor/bin/phpcbf",
+        "lint": "vendor/bin/phpcs --standard=phpcs.xml",
+        "analyze": "vendor/bin/psalm",
+        "test": "vendor/bin/phpunit tests",
+        "mess": "vendor/bin/phpmd src/,tests/,demos/ github cleancode,codesize,controversial,design,naming,unusedcode",
+        "ci": [
+            "@composer lint",
+            "@composer analyze",
+            "@composer mess",
+            "@composer test"
+        ],
+        "build": [
+            "@composer fix",
+            "@composer lint",
+            "@composer analyze",
+            "@composer mess",
+            "@composer test"
+        ]
+    }
+}

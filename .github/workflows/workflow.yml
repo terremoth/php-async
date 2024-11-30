@@ -1,0 +1,65 @@
+name: Complete Workflow
+
+on:
+  push:
+    paths:
+      - '**/*.php'
+      - '**/*.css'
+      - '**/*.js'
+  pull_request:
+    paths:
+      - '**/*.php'
+      - '**/*.css'
+      - '**/*.js'
+
+jobs:
+  run:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout Actions
+        uses: actions/checkout@v4
+
+      - name: Setup PHP
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: '8.2'
+          coverage: xdebug
+          
+      - name: Install Composer Dependencies
+        run: composer install --no-progress --prefer-dist --optimize-autoloader
+        
+      - name: Run psalm
+        run: ./vendor/bin/psalm --shepherd --threads=2 --no-cache --output-format=github
+
+      - name: Code Climate Coverage - before build
+        run: |
+          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter && chmod +x ./cc-test-reporter
+          ./cc-test-reporter before-build
+
+      - name: Run Tests
+        run: |
+          php vendor/bin/phpunit --coverage-clover coverage.xml --configuration phpunit.xml tests
+       
+      - name: Code Climate Coverage - Upload and Report
+        env: 
+          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
+        run: |
+          ./cc-test-reporter format-coverage coverage.xml -t clover 
+          ./cc-test-reporter upload-coverage coverage.xml
+          
+      - name: Upload coverage to Codecov
+        uses: codecov/codecov-action@v4.0.1
+        with:
+          files: ./coverage.xml
+          verbose: true
+        env:
+          CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
+      - name: PHP Mess Detector
+        uses: php-actions/phpmd@v1
+        with:
+          php_version: 8.1
+          path: src/,demos/,tests/
+          output: text
+          ruleset: phpmd.xml
