@@ -1,7 +1,8 @@
-# php-project-template
-My personal PHP projects template  
+# PHP Async Process
+Process functions or files asynchronously without needing AMP, ReactPHP, RxPHP, Fibers, Pthreads, Parallel, Revolt, 
+Pcntl or Swoole.  
 
-Change the "vendor" word to the correct repo vendor name
+Just raw PHP! It is magic!
 
 [![CodeCov](https://codecov.io/gh/terremoth/vendor/graph/badge.svg?token=TOKEN)](https://app.codecov.io/gh/terremoth/vendor)
 [![Psalm type coverage](https://shepherd.dev/github/terremoth/vendor/coverage.svg)](https://shepherd.dev/github/terremoth/vendor)
@@ -12,9 +13,45 @@ Change the "vendor" word to the correct repo vendor name
 [![License](https://img.shields.io/github/license/terremoth/vendor.svg?logo=gnu&color=41bb13)](https://github.com/terremoth/vendor/blob/main/LICENSE)
 ![Packagist Downloads](https://img.shields.io/packagist/dt/terremoth/vendor?color=41bb13)
 
+It uses a combination of:
+- serializable-clojure lib
+- Symfony/Process lib
+- and PHP's native Shmop extension
+
 See [demos/demo.php](demos/demo.php) for examples.
 
 ## Installation
 
-- Clone this repo:
-- `$ git clone ...`
+```sh
+composer require terremoth/php-async
+```
+
+## Documentation
+
+```php
+<?php
+
+require_once 'vendor/autoload.php';
+
+use Terremoth\Async\File;
+use Terremoth\Async\Process;
+
+$process = new Process();
+$process->send(function () {
+    /*
+    // anything you want to process here
+    // Important note: do not use closure vars, like:
+    // $process->send(function () use ($var1, $var2, ...)  { ... });
+    // since the closure will be processed in another file.
+    // Write everything you want without outside dependencies here
+    // In a future version I create communications variables between both processes
+    */
+});
+
+$args = ['--verbose', '-n', '123'];
+$asyncFile = new File('existing-php-file.php', $args); // make sure to pass the correct file with its path
+$asyncFile->run();
+
+```
+
+That's it!
