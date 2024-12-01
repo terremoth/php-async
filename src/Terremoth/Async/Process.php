@@ -33,7 +33,7 @@ class Process
     {
         $serialized = serialize(new SerializableClosure($asyncFunction));
         $serializedLength = strlen($serialized);
-        $shmopInstance = shmop_open($this->key, 'c', 0200, $serializedLength);
+        $shmopInstance = shmop_open($this->key, 'c', 0660, $serializedLength);
 
         if (!$shmopInstance) {
             throw new Exception('Could not create shmop instance with key: ' . $this->key);

@@ -22,7 +22,7 @@ if ($length === 0) {
     exit(1);
 }
 
-$shmopInstance = shmop_open($key, 'c', 400, $length);
+$shmopInstance = shmop_open($key, 'c', 0660, $length);
 $data = shmop_read($shmopInstance, 0, $length);
 
 /**
