@@ -1,5 +1,5 @@
 {
-    "name": "terremoth/php-async-process",
+    "name": "terremoth/php-async",
     "description": "",
     "type": "library",
     "require": {
