@@ -11,18 +11,10 @@ class Process
 {
     private const MAX_INT = 2147483647;
 
-    private array $processTemplate = [PHP_BINARY, __DIR__ . DIRECTORY_SEPARATOR . 'background_processor.php', '{key}',
-        '{length}', '&'];
-    private int $key;
-
-    public function __construct()
+    public function __construct(private int $key = 0)
     {
-        $this->key = mt_rand(0, self::MAX_INT); // communication key
-        $this->processTemplate[2] = $this->key;
-
-        if (PHP_OS_FAMILY === 'Windows') {
-            $this->processTemplate = ['start', '""', '/B', PHP_BINARY, __DIR__ . DIRECTORY_SEPARATOR .
-                'background_processor.php', $this->key, '{length}'];
+        if (!$this->key) {
+            $this->key = mt_rand(0, self::MAX_INT); // communication key
         }
     }
 
@@ -31,6 +23,7 @@ class Process
      */
     public function send(Closure $asyncFunction): void
     {
+        $separator = DIRECTORY_SEPARATOR;
         $serialized = serialize(new SerializableClosure($asyncFunction));
         $serializedLength = strlen($serialized);
         $shmopInstance = shmop_open($this->key, 'c', 0660, $serializedLength);
@@ -46,9 +39,14 @@ class Process
                 $serializedLength . '. Bytes written: ' . $bytesWritten);
         }
 
-        $key = array_search('{length}', $this->processTemplate);
-        $this->processTemplate[$key] =  $serializedLength;
-        $process = new SymfonyProcess($this->processTemplate);
-        $process->start();
+        if (PHP_OS_FAMILY === 'Windows') {
+            $arg = ['start', '""', '/B', PHP_BINARY, __DIR__ . $separator . 'background_processor.php', $this->key];
+            $process = new SymfonyProcess($arg);
+            $process->start();
+            return;
+        }
+
+        exec(PHP_BINARY . __DIR__ . $separator . 'background_processor.php ' . $this->key .
+            ' > /dev/null 2>&1 &');
     }
 }

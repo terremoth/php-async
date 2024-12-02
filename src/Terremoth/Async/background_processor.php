@@ -9,20 +9,10 @@ if (!isset($argv[1])) {
     exit(1);
 }
 
-if (!isset($argv[2])) {
-    fwrite(STDERR, 'Error: length not provided');
-    exit(1);
-}
-
 $key = (int)$argv[1];
-$length = (int)$argv[2];
 
-if ($length === 0) {
-    fwrite(STDERR, 'Error: length cannot be zero');
-    exit(1);
-}
-
-$shmopInstance = shmop_open($key, 'c', 0660, $length);
+$shmopInstance = shmop_open($key, 'a', 0, 0);
+$length = shmop_size($shmopInstance);
 $data = shmop_read($shmopInstance, 0, $length);
 
 /**
