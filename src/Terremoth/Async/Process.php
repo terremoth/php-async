@@ -46,7 +46,7 @@ class Process
             return;
         }
 
-        exec(PHP_BINARY . __DIR__ . $separator . 'background_processor.php ' . $this->key .
+        exec(PHP_BINARY . ' ' . __DIR__ . $separator . 'background_processor.php ' . $this->key .
             ' > /dev/null 2>&1 &');
     }
 }
