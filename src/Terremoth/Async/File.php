@@ -5,19 +5,19 @@ namespace Terremoth\Async;
 use Exception;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
-class File
+readonly class File
 {
     /**
      * @throws Exception
      */
-    public function __construct(private readonly string $file, private readonly array $args = [])
+    public function __construct(private string $file, private array $args = [])
     {
         if (!is_readable($this->file)) {
             throw new Exception('File ' . $this->file . ' does not exists or is not readable!');
         }
     }
 
-    public function run(): int
+    public function run(): void
     {
         $template = [PHP_BINARY, $this->file, ...$this->args, '&'];
 
@@ -26,6 +26,6 @@ class File
         }
 
         $process = new SymfonyProcess($template);
-        return $process->start();
+        $process->start();
     }
 }

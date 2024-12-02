@@ -29,7 +29,7 @@ class Process
     /**
      * @throws Exception
      */
-    public function send(Closure $asyncFunction): int
+    public function send(Closure $asyncFunction): void
     {
         $serialized = serialize(new SerializableClosure($asyncFunction));
         $serializedLength = strlen($serialized);
@@ -49,6 +49,6 @@ class Process
         $key = array_search('{length}', $this->processTemplate);
         $this->processTemplate[$key] =  $serializedLength;
         $process = new SymfonyProcess($this->processTemplate);
-        return $process->run();
+        $process->start();
     }
 }
