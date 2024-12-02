@@ -26,6 +26,6 @@ class File
         }
 
         $process = new SymfonyProcess($template);
-        return $process->run();
+        return $process->start();
     }
 }
