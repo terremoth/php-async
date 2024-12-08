@@ -47,7 +47,7 @@ $process->send(function () {
     // $process->send(function () use ($var1, $var2, ...)  { ... });
     // since the closure will be processed in another file.
     // Write everything you want without outside dependencies here
-    // In a future version I create communications variables between both processes
+    // In a future version I will create communications variables between both processes
     */
 });
 
