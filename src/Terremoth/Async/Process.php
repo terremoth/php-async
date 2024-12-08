@@ -5,16 +5,15 @@ namespace Terremoth\Async;
 use Closure;
 use Exception;
 use Laravel\SerializableClosure\SerializableClosure;
-use Symfony\Component\Process\Process as SymfonyProcess;
 
 class Process
 {
     private const MAX_INT = 2147483647;
 
-    public function __construct(private int $key = 0)
+    public function __construct(private int $shmopKey = 0)
     {
-        if (!$this->key) {
-            $this->key = mt_rand(0, self::MAX_INT); // communication key
+        if (!$this->shmopKey) {
+            $this->shmopKey = mt_rand(0, self::MAX_INT); // communication key
         }
     }
 
@@ -23,30 +22,24 @@ class Process
      */
     public function send(Closure $asyncFunction): void
     {
-        $separator = DIRECTORY_SEPARATOR;
+        $dirSlash = DIRECTORY_SEPARATOR;
         $serialized = serialize(new SerializableClosure($asyncFunction));
-        $serializedLength = strlen($serialized);
-        $shmopInstance = shmop_open($this->key, 'c', 0660, $serializedLength);
+        $compressedLength = mb_strlen($serialized);
+        $shmopInstance = shmop_open($this->shmopKey, 'c', 0660, $compressedLength);
 
         if (!$shmopInstance) {
-            throw new Exception('Could not create shmop instance with key: ' . $this->key);
+            throw new Exception('Could not create shmop instance with key: ' . $this->shmopKey);
         }
 
         $bytesWritten = shmop_write($shmopInstance, $serialized, 0);
 
-        if ($bytesWritten != $serializedLength) {
-            throw new Exception('Could not write the entire data to shared memory with length: ' .
-                $serializedLength . '. Bytes written: ' . $bytesWritten);
+        if ($bytesWritten < $compressedLength) {
+            throw new Exception('Error: Could not write the entire data to shared memory with length: ' .
+                $compressedLength . '. Bytes written: ' . $bytesWritten . PHP_EOL);
         }
 
-        if (PHP_OS_FAMILY === 'Windows') {
-            $arg = ['start', '""', '/B', PHP_BINARY, __DIR__ . $separator . 'background_processor.php', $this->key];
-            $process = new SymfonyProcess($arg);
-            $process->start();
-            return;
-        }
-
-        exec(PHP_BINARY . ' ' . __DIR__ . $separator . 'background_processor.php ' . $this->key .
-            ' > /dev/null 2>&1 &');
+        $fileWithPath = __DIR__ . $dirSlash . 'background_processor.php';
+        $file = new PhpFile($fileWithPath, [$this->shmopKey]);
+        $file->run();
     }
 }

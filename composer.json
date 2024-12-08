@@ -6,7 +6,9 @@
         "php": "^8.2",
         "symfony/process": "^7.2",
         "laravel/serializable-closure": "^2.0",
-        "ext-shmop": "*"
+        "ext-shmop": "*",
+        "ext-fileinfo": "*",
+        "ext-zlib": "*"
     },
     "keywords": [
         "async",

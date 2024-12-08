@@ -18,6 +18,8 @@ It uses a combination of:
 - Symfony/Process lib
 - and PHP's native Shmop extension
 
+**Warning: it does not works on MSYS/MINGW terminals!**. It will work fine on both Windows (cmd and powershell) and Linux.
+
 See [demos/demo.php](demos/demo.php) for examples.
 
 ## Installation
@@ -33,7 +35,7 @@ composer require terremoth/php-async
 
 require_once 'vendor/autoload.php';
 
-use Terremoth\Async\File;
+use Terremoth\Async\PhpFile;
 use Terremoth\Async\Process;
 
 $process = new Process();
@@ -49,7 +51,7 @@ $process->send(function () {
 });
 
 $args = ['--verbose', '-n', '123'];
-$asyncFile = new File('existing-php-file.php', $args); // make sure to pass the correct file with its path
+$asyncFile = new PhpFile('existing-php-file.php', $args); // make sure to pass the correct file with its path
 $asyncFile->run();
 
 ```

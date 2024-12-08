@@ -7,3 +7,6 @@ composer.phar
 .idea
 .vscode
 .phpunit.cache
+
+demo.txt
+demo-file.tx
