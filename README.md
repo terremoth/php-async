@@ -4,13 +4,14 @@ Pcntl or Swoole.
 
 Just raw PHP! It is magic!
 
-[![CodeCov](https://codecov.io/gh/terremoth/php-async/graph/badge.svg?token=TOKEN)](https://app.codecov.io/gh/terremoth/vendor)
+[![codecov](https://codecov.io/gh/terremoth/php-async/graph/badge.svg?token=W37V5EDERQ)](https://codecov.io/gh/terremoth/php-async)
+[![Test Coverage](https://api.codeclimate.com/v1/badges/c6420e5f6ab01e70eed7/test_coverage)](https://codeclimate.com/github/terremoth/php-async/test_coverage)
 [![Psalm type coverage](https://shepherd.dev/github/terremoth/php-async/coverage.svg)](https://shepherd.dev/github/terremoth/vendor)
 [![Psalm level](https://shepherd.dev/github/terremoth/php-async/level.svg)](https://shepherd.dev/github/terremoth/vendor)
 [![Test Run Status](https://github.com/terremoth/php-async/actions/workflows/workflow.yml/badge.svg?branch=main)](https://github.com/terremoth/php-async/actions/workflows/workflow.yml)
-[![Codacy Badge](https://app.codacy.com/project/badge/Grade/CODE)](https://app.codacy.com/gh/terremoth/php-async/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-[![Code Climate Maintainability](https://api.codeclimate.com/v1/badges/CODE/maintainability)](https://codeclimate.com/github/terremoth/php-async/maintainability)
-[![License](https://img.shields.io/github/license/terremoth/vendor.svg?logo=gnu&color=41bb13)](https://github.com/terremoth/php-async/blob/main/LICENSE)
+[![Codacy Badge](https://app.codacy.com/project/badge/Grade/478adadc949c43b090fb22417e832326)](https://app.codacy.com/gh/terremoth/php-async/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
+[![Maintainability](https://api.codeclimate.com/v1/badges/c6420e5f6ab01e70eed7/maintainability)](https://codeclimate.com/github/terremoth/php-async/maintainability)
+[![License](https://img.shields.io/github/license/terremoth/vendor.svg?logo=mit&color=41bb13)](https://github.com/terremoth/php-async/blob/main/LICENSE)
 ![Packagist Downloads](https://img.shields.io/packagist/dt/terremoth/vendor?color=41bb13)
 
 It uses a combination of:
