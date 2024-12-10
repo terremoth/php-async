@@ -51,6 +51,7 @@ $process->send(function () {
     */
 });
 
+// Another way to use is if you want to just process a file Asynchronously, you can do this:
 $args = ['--verbose', '-n', '123'];
 $asyncFile = new PhpFile('existing-php-file.php', $args); // make sure to pass the correct file with its path
 $asyncFile->run();
