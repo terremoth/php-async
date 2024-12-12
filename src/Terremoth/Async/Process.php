@@ -24,8 +24,8 @@ class Process
     {
         $dirSlash = DIRECTORY_SEPARATOR;
         $serialized = serialize(new SerializableClosure($asyncFunction));
-        $compressedLength = mb_strlen($serialized);
-        $shmopInstance = shmop_open($this->shmopKey, 'c', 0660, $compressedLength);
+        $length = mb_strlen($serialized);
+        $shmopInstance = shmop_open($this->shmopKey, 'c', 0660, $length);
 
         if (!$shmopInstance) {
             throw new Exception('Could not create shmop instance with key: ' . $this->shmopKey);
@@ -33,9 +33,9 @@ class Process
 
         $bytesWritten = shmop_write($shmopInstance, $serialized, 0);
 
-        if ($bytesWritten < $compressedLength) {
+        if ($bytesWritten < $length) {
             throw new Exception('Error: Could not write the entire data to shared memory with length: ' .
-                $compressedLength . '. Bytes written: ' . $bytesWritten . PHP_EOL);
+                $length . '. Bytes written: ' . $bytesWritten . PHP_EOL);
         }
 
         $fileWithPath = __DIR__ . $dirSlash . 'background_processor.php';
