@@ -19,7 +19,8 @@ It uses a combination of:
 - Symfony/Process lib
 - and PHP's native Shmop extension
 
-**Warning: it does not works on MSYS/MINGW terminals!**. It will work fine on both Windows (cmd and powershell) and Linux.
+### Warning
+it does not works on MSYS or MINGW terminals! However, It will work fine on both Windows (cmd and powershell) and Linux.
 
 See [demos/demo.php](demos/demo.php) for examples.
 
