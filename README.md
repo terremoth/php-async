@@ -4,8 +4,10 @@ Pcntl or Swoole.
 
 Just raw PHP! It is magic!
 
+<!--
 [![codecov](https://codecov.io/gh/terremoth/php-async/graph/badge.svg?token=W37V5EDERQ)](https://codecov.io/gh/terremoth/php-async)
 [![Test Coverage](https://api.codeclimate.com/v1/badges/c6420e5f6ab01e70eed7/test_coverage)](https://codeclimate.com/github/terremoth/php-async/test_coverage)
+-->
 [![Psalm type coverage](https://shepherd.dev/github/terremoth/php-async/coverage.svg)](https://shepherd.dev/github/terremoth/php-async)
 [![Psalm level](https://shepherd.dev/github/terremoth/php-async/level.svg)](https://shepherd.dev/github/terremoth/php-async)
 [![Test Run Status](https://github.com/terremoth/php-async/actions/workflows/workflow.yml/badge.svg?branch=main)](https://github.com/terremoth/php-async/actions/workflows/workflow.yml)
