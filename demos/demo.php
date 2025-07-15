@@ -10,10 +10,16 @@ $process = new Process();
 echo date('c') . ' :: Sending process. You should not wait any longer to see next message: ' . PHP_EOL;
 
 try {
-    $process->send(function () {
+    $age = 30;
+    $name = 'John Doe';
+    $fruits = ['orange', 'apple', 'grape'];
+    $process->send(function () use ($age, $name, $fruits) {
         sleep(5);
-        echo 123;
-        file_put_contents('demo.txt', 'Hello, World! At: ' . date('c'));
+        echo 123; // you should not see this anywhere
+        file_put_contents(
+            'demo.txt',
+            "Age: $age\nName: $name\nFruits: " . implode(', ', $fruits) . ' - ' . date('c')
+        );
     });
 } catch (Exception $e) {
     echo $e->getMessage();
