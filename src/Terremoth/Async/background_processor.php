@@ -6,7 +6,7 @@ ini_set('error_log', 'php-async-errors-' . date('YmdH') . '.log');
 error_reporting(E_ALL);
 
 require_once 'vendor/autoload.php';
-require_once 'script_functions.php';
+require_once __DIR__ . DIRECTORY_SEPARATOR . 'script_functions.php';
 
 use Laravel\SerializableClosure\SerializableClosure;
 
