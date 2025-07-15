@@ -43,13 +43,13 @@ use Terremoth\Async\PhpFile;
 use Terremoth\Async\Process;
 
 $process = new Process();
-$process->send(function () {
+$age = 30;
+$name = 'John Doe';
+$fruits = ['orange', 'apple', 'grape'];
+
+$process->send(function () use ($age, $name, $fruits) {
     /*
-    // anything you want to process here
-    // Important note: do not use closure vars, like:
-    // $process->send(function () use ($var1, $var2, ...)  { ... });
-    // since the closure will be processed in another file.
-    // Write everything you want without outside dependencies here
+    // Anything you want to process here, you can use closure vars
     // In a future version I will create communications variables between both processes
     */
 });
