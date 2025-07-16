@@ -79,6 +79,9 @@ $args = ['--verbose', '-n', '123'];
 $asyncFile = new PhpFile('existing-php-file.php', $args); // make sure to pass the correct file with its path
 $asyncFile->run();
 
+/*
+    Take care with $args if you will use it this way!
+    Attackers may explore this to inject commands through RFI/LFI attacks.
+    The suggestion is: avoid the users to add/control the $args variable.
+*/
 ```
-
-That's it!
