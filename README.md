@@ -1,5 +1,5 @@
 # PHP Async Process
-Process functions or files asynchronously without needing AMP, ReactPHP, RxPHP, Spatie/Fork, Fibers, Pthreads, Parallel, Revolt, 
+Process functions or files **async** and in **parallel** without needing AMP, ReactPHP, RxPHP, Spatie/Fork, Fibers, Pthreads, Parallel, Revolt, 
 Pcntl or Swoole.  
 
 Just raw PHP! It is magic!
