@@ -16,11 +16,6 @@ Just raw PHP! It is magic!
 [![License](https://img.shields.io/github/license/terremoth/php-async.svg?logo=mit&color=41bb13)](https://github.com/terremoth/php-async/blob/main/LICENSE)
 ![Packagist Downloads](https://img.shields.io/packagist/dt/terremoth/php-async?color=41bb13)
 
-It uses a combination of:
-- serializable-clojure lib
-- Symfony/Process lib
-- and PHP's native Shmop extension
-
 ### Target Audience
 For those who, for some reason, cannot or don't want to use Swoole or Parallel
 
@@ -31,7 +26,22 @@ For those who, for some reason, cannot or don't want to use Swoole or Parallel
 - Fast to use: no need to compile, no need to download pecl extensions
 - Operating system agnostic
 
-### Warning
+### How?
+It uses a combination of:
+- serializable-clojure lib
+- Symfony/Process lib
+- and PHP's native Shmop extension (available in any platform)
+
+First it serializes your closure with its code,  
+Then it sends to another *background* process to execute, through [shmop](https://www.php.net/manual/en/ref.shmop.php)
+
+#### Some Possible Use Cases
+- You got some user data and want to do a heavy processing somewhere without blocking;
+- You want to send an email in you own platform without blocking with some data you got before;
+- You want to create tons of processes at the same time, not blocking the main process/thread;
+- Something will be heavy processed and will took time but your user does not need to know that at the time and don't need/want to wait;
+
+#### Warning
 it does not works on MSYS or MINGW shells! However, It will work fine on both Windows (cmd and powershell) and Linux.
 
 See [demos/demo.php](demos/demo.php) for examples.
