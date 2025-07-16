@@ -59,8 +59,7 @@ $fruits = ['orange', 'apple', 'grape'];
 
 $process->send(function () use ($age, $name, $fruits) {
     /*
-    // Anything you want to process here, you can use closure vars
-    // In a future version I will create communications variables between both processes
+    // Anything you want to process here + you can use closure vars for sending data to the other process
     */
 });
 
