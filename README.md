@@ -21,8 +21,18 @@ It uses a combination of:
 - Symfony/Process lib
 - and PHP's native Shmop extension
 
+### Target Audience
+For those who, for some reason, cannot or don't want to use Swoole or Parallel
+
+### Why?
+- Native way + no need to change php.ini
+- Easy: just composer install the lib and use it
+- Fast to learn
+- Fast to use: no need to compile, no need to download pecl extensions
+- Operating system agnostic
+
 ### Warning
-it does not works on MSYS or MINGW terminals! However, It will work fine on both Windows (cmd and powershell) and Linux.
+it does not works on MSYS or MINGW shells! However, It will work fine on both Windows (cmd and powershell) and Linux.
 
 See [demos/demo.php](demos/demo.php) for examples.
 
