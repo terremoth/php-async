@@ -37,7 +37,7 @@ Then it sends to another *background* process to execute, through [shmop](https:
 
 #### Some Possible Use Cases
 - You got some user data and want to do a heavy processing somewhere without blocking;
-- You want to send an email in you own platform without blocking with some data you got before;
+- You want to send an email in your own platform without blocking with some data you got before;
 - You want to create tons of processes at the same time, not blocking the main process/thread;
 - Something will be heavy processed and will took time but your user does not need to know that at the time and don't need/want to wait;
 
