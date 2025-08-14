@@ -2,7 +2,7 @@
 Process functions or files **async** and in **parallel** without needing AMP, ReactPHP, RxPHP, Spatie/Fork, Fibers, Pthreads, Parallel, Revolt, 
 Pcntl or Swoole.  
 
-Just raw PHP! It is magic!
+Just raw PHP! It is magic! This is **not** the classical meaning of async like python's or nodejs you're addicted to hear. This is more like an "Async Process", or "Async Multitasking", but you can achieve the same results you expect. Enjoy.
 
 <!--
 [![codecov](https://codecov.io/gh/terremoth/php-async/graph/badge.svg?token=W37V5EDERQ)](https://codecov.io/gh/terremoth/php-async)
