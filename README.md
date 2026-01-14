@@ -12,7 +12,7 @@ Just raw PHP! It is magic! This is **not** the classical meaning of async like p
 [![Psalm level](https://shepherd.dev/github/terremoth/php-async/level.svg)](https://shepherd.dev/github/terremoth/php-async)
 [![Test Run Status](https://github.com/terremoth/php-async/actions/workflows/workflow.yml/badge.svg?branch=main)](https://github.com/terremoth/php-async/actions/workflows/workflow.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/478adadc949c43b090fb22417e832326)](https://app.codacy.com/gh/terremoth/php-async/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
-[![Maintainability](https://api.codeclimate.com/v1/badges/c6420e5f6ab01e70eed7/maintainability)](https://codeclimate.com/github/terremoth/php-async/maintainability)
+[![Maintainability](https://qlty.sh/gh/terremoth/projects/php-async/maintainability.svg)](https://qlty.sh/gh/terremoth/projects/php-async)
 [![License](https://img.shields.io/github/license/terremoth/php-async.svg?logo=mit&color=41bb13)](https://github.com/terremoth/php-async/blob/main/LICENSE)
 ![Packagist Downloads](https://img.shields.io/packagist/dt/terremoth/php-async?color=41bb13)
 
