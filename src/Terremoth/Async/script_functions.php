@@ -1,6 +1,8 @@
 <?php
 
-function error(string $error): void
+namespace Terremoth\Async;
+
+function custom_error(string $error): void
 {
     $error = 'Error: ' . $error;
     fwrite(STDERR, $error);

@@ -65,13 +65,10 @@ class ProcessTest extends TestCase
 
         $raw = shmop_read($shmop, 0, $size);
         $data = rtrim($raw, "\0");
-        $this->assertIsString($data);
-
         $unserialized = unserialize($data);
         $this->assertInstanceOf(SerializableClosure::class, $unserialized);
 
-        $func = $unserialized->getClosure();
-        $this->assertIsCallable($func);
+        $unserialized->getClosure();
 
         // shmop_delete($shmop);
         // shmop_close($shmop); // deprecated
@@ -90,7 +87,7 @@ class ProcessTest extends TestCase
     }
 
     /**
-     * @throws RandomException
+     * @throws RandomException|Exception
      */
     public function testSendThrowsWhenNotAllBytesAreWritten(): void
     {
@@ -98,24 +95,18 @@ class ProcessTest extends TestCase
 
         $process = $this->getMockBuilder(Process::class)
             ->setConstructorArgs([$key])
-            ->onlyMethods([])
+            ->onlyMethods(['writeToShmop'])
             ->getMock();
 
-        serialize(new SerializableClosure(function () {
-        }));
-
-        $shmop = shmop_open($key, 'c', 0660, 1);
-        // shmop_close($shmop); // deprecated function
+        $process
+            ->expects($this->once())
+            ->method('writeToShmop')
+            ->willReturn(10);
 
         $this->expectException(Exception::class);
 
         $process->send(function () {
         });
-
-        $this->assertNotFalse($shmop);
-        if ($shmop) {
-            shmop_delete($shmop);
-        }
     }
 
     /**
@@ -133,11 +124,9 @@ class ProcessTest extends TestCase
         });
 
         $shmop = shmop_open($key, 'a', 0, 0);
-        if ($shmop) {
-            $this->assertTrue(shmop_delete($shmop));
-            // shmop_close($shmop); // deprecated function
-        } else {
-            $this->expectNotToPerformAssertions();
-        }
+        $this->assertNotFalse($shmop, 'Shared memory should exist after send');
+
+        $size = shmop_size($shmop);
+        $this->assertGreaterThan(0, $size, 'Shared memory should contain data');
     }
 }

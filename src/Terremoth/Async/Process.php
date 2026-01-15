@@ -5,6 +5,7 @@ namespace Terremoth\Async;
 use Closure;
 use Exception;
 use Laravel\SerializableClosure\SerializableClosure;
+use Shmop;
 
 class Process
 {
@@ -22,12 +23,11 @@ class Process
      */
     public function send(Closure $asyncFunction): void
     {
-        $dirSlash = DIRECTORY_SEPARATOR;
         $serialized = serialize(new SerializableClosure($asyncFunction));
         $length = mb_strlen($serialized);
 
-        set_error_handler(function (int $errno, string $error) {
-            throw new Exception($error);
+        set_error_handler(function (int $errorNumber, string $error) {
+            throw new Exception($error . ' - ' . $errorNumber);
         });
 
         try {
@@ -60,15 +60,37 @@ class Process
             restore_error_handler();
         }
 
-        $bytesWritten = shmop_write($shmopInstance, $serialized, 0);
+        $bytesWritten = $this->writeToShmop($shmopInstance, $serialized, 0);
 
-        if ($bytesWritten < $length) {
-            throw new Exception('Error: Could not write the entire data to shared memory with length: ' .
-                $length . '. Bytes written: ' . $bytesWritten . PHP_EOL);
+        if ((bool)$bytesWritten === false) {
+            throw new Exception(
+                'shmop_write failed when writing to shared memory with key: ' . $this->shmopKey
+            );
         }
 
-        $fileWithPath = __DIR__ . $dirSlash . 'background_processor.php';
-        $file = new PhpFile($fileWithPath, [(string)$this->shmopKey]);
+        if ($bytesWritten !== $length) {
+            throw new Exception(
+                'Could not write all bytes to shared memory. Expected: '
+                . $length . ', Written: ' . (int)$bytesWritten
+            );
+        }
+
+        $file = new PhpFile(
+            __DIR__ . DIRECTORY_SEPARATOR . 'background_processor.php',
+            [(string) $this->shmopKey]
+        );
+
         $file->run();
+    }
+
+    /**
+     * @param Shmop $shmopInstance
+     * @param string $data
+     * @param int $offset
+     * @return int|false
+     */
+    protected function writeToShmop(Shmop $shmopInstance, string $data, int $offset): int|false
+    {
+        return shmop_write($shmopInstance, $data, $offset);
     }
 }

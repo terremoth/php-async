@@ -12,7 +12,7 @@ use Exception;
  */
 class PhpFileTest extends TestCase
 {
-    private string $tmpDir;
+    private string $tmpDir = '';
 
     protected function setUp(): void
     {
@@ -23,8 +23,9 @@ class PhpFileTest extends TestCase
 
     protected function tearDown(): void
     {
-        array_map('unlink', glob($this->tmpDir . '/*'));
-        rmdir($this->tmpDir);
+        foreach (glob($this->tmpDir . '/*') as $file) {
+            unlink($file);
+        }
     }
 
     private function makeFile(string $name, string $content): string
