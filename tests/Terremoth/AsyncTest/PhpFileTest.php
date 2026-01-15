@@ -3,6 +3,7 @@
 namespace Terremoth\AsyncTest;
 
 use PHPUnit\Framework\TestCase;
+use Symfony\Component\Process\Process as SymfonyProcess;
 use Terremoth\Async\PhpFile;
 use InvalidArgumentException;
 use Exception;
@@ -96,5 +97,77 @@ class PhpFileTest extends TestCase
         $obj->run();
 
         $this->expectNotToPerformAssertions();
+    }
+
+
+    public function testRunExecutesWindowsFlowWhenOsIsWindows(): void
+    {
+        $tempFile = tempnam(sys_get_temp_dir(), 'test_win') . '.php';
+        file_put_contents($tempFile, '<?php echo "hello";');
+
+        try {
+            $phpFile = $this->getMockBuilder(PhpFile::class)
+                ->setConstructorArgs([$tempFile, ['arg1', 'arg2']])
+                ->onlyMethods(['getOsFamily', 'startProcess', 'executeCommand'])
+                ->getMock();
+
+            $phpFile->expects($this->once())
+                ->method('getOsFamily')
+                ->willReturn('Windows');
+
+            $phpFile->expects($this->once())
+                ->method('startProcess')
+                ->willReturnCallback(function (SymfonyProcess $process) use ($tempFile) {
+                    $commandLine = $process->getCommandLine();
+
+                    $this->assertStringContainsString('start', $commandLine);
+                    $this->assertStringContainsString('/B', $commandLine);
+                    $this->assertStringContainsString($tempFile, $commandLine);
+                    $this->assertStringContainsString('arg1', $commandLine);
+                });
+
+            $phpFile->expects($this->never())
+                ->method('executeCommand');
+
+            $phpFile->run();
+        } finally {
+            if (file_exists($tempFile)) {
+                unlink($tempFile);
+            }
+        }
+    }
+
+    public function testRunExecutesUnixFlowWhenOsIsLinux(): void
+    {
+        $tempFile = tempnam(sys_get_temp_dir(), 'test_unix') . '.php';
+        file_put_contents($tempFile, '<?php echo "hello";');
+
+        try {
+            $phpFile = $this->getMockBuilder(PhpFile::class)
+                ->setConstructorArgs([$tempFile, ['argA']])
+                ->onlyMethods(['getOsFamily', 'startProcess', 'executeCommand'])
+                ->getMock();
+
+            $phpFile->expects($this->once())
+                ->method('getOsFamily')
+                ->willReturn('Linux');
+
+            $phpFile->expects($this->never())
+                ->method('startProcess');
+
+            $phpFile->expects($this->once())
+                ->method('executeCommand')
+                ->willReturnCallback(function (string $command) use ($tempFile) {
+                    $this->assertStringContainsString('> /dev/null 2>&1 &', $command);
+                    $this->assertStringContainsString($tempFile, $command);
+                    $this->assertStringContainsString('argA', $command);
+                });
+
+            $phpFile->run();
+        } finally {
+            if (file_exists($tempFile)) {
+                unlink($tempFile);
+            }
+        }
     }
 }

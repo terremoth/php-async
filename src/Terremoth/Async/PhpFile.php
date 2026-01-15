@@ -6,12 +6,12 @@ use Exception;
 use InvalidArgumentException;
 use Symfony\Component\Process\Process as SymfonyProcess;
 
-readonly class PhpFile
+class PhpFile
 {
     /**
      * @param string $file
-     * @throws Exception
      * @param list<string> $args
+     * @throws Exception
      */
     public function __construct(private string $file, private array $args = [])
     {
@@ -20,9 +20,9 @@ readonly class PhpFile
                 . ' does not exists or is not readable!');
         }
 
-        $finfo = finfo_open(FILEINFO_MIME_TYPE);
-        $mimeType = finfo_file($finfo, $this->file);
-        finfo_close($finfo);
+        $fileInfo = finfo_open(FILEINFO_MIME_TYPE);
+        $mimeType = finfo_file($fileInfo, $this->file);
+        finfo_close($fileInfo);
 
         if (!in_array($mimeType, ['text/x-php', 'application/x-php', 'application/php', 'application/x-httpd-php'])) {
             throw new Exception('Error: file ' . $this->file . ' is not a PHP file!');
@@ -31,14 +31,32 @@ readonly class PhpFile
 
     public function run(): void
     {
-        if (PHP_OS_FAMILY === 'Windows') {
+        if ($this->getOsFamily() === 'Windows') {
             $template = ['start', "", '/B', PHP_BINARY, $this->file, ...$this->args];
             $process = new SymfonyProcess($template);
-            $process->start();
+
+            $this->startProcess($process);
             return;
         }
 
-        $args = implode(' ', $this->args);
-        exec(PHP_BINARY . ' ' . $this->file . ' ' . $args . '  > /dev/null 2>&1 &');
+        $arguments = implode(' ', $this->args);
+        $command = PHP_BINARY . ' ' . $this->file . ' ' . $arguments . ' > /dev/null 2>&1 &';
+
+        $this->executeCommand($command);
+    }
+
+    protected function getOsFamily(): string
+    {
+        return PHP_OS_FAMILY;
+    }
+
+    protected function startProcess(SymfonyProcess $symfonyProcess): void
+    {
+        $symfonyProcess->start();
+    }
+
+    protected function executeCommand(string $command): void
+    {
+        exec($command);
     }
 }
