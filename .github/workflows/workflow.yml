@@ -41,12 +41,11 @@ jobs:
         run: |
           php vendor/bin/phpunit --coverage-clover coverage.xml --configuration phpunit.xml tests
        
-      - name: Code Climate Coverage - Upload and Report
-        env: 
-          CC_TEST_REPORTER_ID: ${{ secrets.CC_TEST_REPORTER_ID }}
-        run: |
-          ./cc-test-reporter format-coverage coverage.xml -t clover 
-          ./cc-test-reporter upload-coverage coverage.xml
+      - name: Upload test results to Codecov
+        if: ${{ !cancelled() }}
+        uses: codecov/test-results-action@v1
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
           
       - name: Upload coverage to Codecov
         uses: codecov/codecov-action@v4.0.1
