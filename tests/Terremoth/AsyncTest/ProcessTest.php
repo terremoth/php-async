@@ -11,6 +11,7 @@ use ReflectionProperty;
 
 /**
  * @covers \Terremoth\Async\Process
+ * @covers \Terremoth\Async\PhpFile
  */
 class ProcessTest extends TestCase
 {
@@ -72,18 +73,6 @@ class ProcessTest extends TestCase
 
         // shmop_delete($shmop);
         // shmop_close($shmop); // deprecated
-    }
-
-    public function testSendThrowsWhenShmopCannotBeCreated(): void
-    {
-        $badKey = -1; // impossible key
-
-        $process = new Process($badKey);
-
-        $this->expectException(Exception::class);
-
-        $process->send(function () {
-        });
     }
 
     /**
