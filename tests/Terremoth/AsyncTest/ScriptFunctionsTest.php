@@ -8,7 +8,7 @@ use function Terremoth\Async\stringFromMemoryBlock;
 
 /**
  * @covers \Terremoth\Async\stringFromMemoryBlock
- * @covers \Terremoth\Async\error
+ * @covers \Terremoth\Async\customError
  */
 class ScriptFunctionsTest extends TestCase
 {

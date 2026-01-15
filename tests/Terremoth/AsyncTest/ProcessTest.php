@@ -76,7 +76,7 @@ class ProcessTest extends TestCase
 
     public function testSendThrowsWhenShmopCannotBeCreated(): void
     {
-        $badKey = PHP_INT_MAX;
+        $badKey = -1; // impossible key
 
         $process = new Process($badKey);
 

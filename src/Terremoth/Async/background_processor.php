@@ -13,7 +13,7 @@ require_once __DIR__ . DIRECTORY_SEPARATOR . 'script_functions.php';
 use Laravel\SerializableClosure\SerializableClosure;
 
 if (!isset($argv[1])) {
-    custom_error('Shmop Key not provided');
+    customError('Shmop Key not provided');
     exit(1);
 }
 
@@ -22,14 +22,14 @@ $key = (int)$argv[1];
 $shmopInstance = shmop_open($key, 'a', 0, 0);
 
 if (!$shmopInstance) {
-    custom_error('Could not open Shmop');
+    customError('Could not open Shmop');
     exit(1);
 }
 
 $length = shmop_size($shmopInstance);
 
 if ($length === 0) {
-    custom_error('Shmop length cannot be zero!');
+    customError('Shmop length cannot be zero!');
     exit(1);
 }
 

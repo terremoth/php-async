@@ -2,7 +2,7 @@
 
 namespace Terremoth\Async;
 
-function custom_error(string $error): void
+function customError(string $error): void
 {
     $error = 'Error: ' . $error;
     fwrite(STDERR, $error);
