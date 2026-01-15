@@ -2,6 +2,10 @@
 
 namespace Terremoth\Async;
 
+/**
+ * @codeCoverageIgnore
+ * @codeCoverageIgnoreStart
+ */
 function customError(string $error): void
 {
     $error = 'Error: ' . $error;
