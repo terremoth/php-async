@@ -28,11 +28,6 @@ jobs:
       - name: Run psalm
         run: ./vendor/bin/psalm --shepherd --threads=2 --no-cache --output-format=github
 
-      - name: Code Climate Coverage - before build
-        run: |
-          curl -L https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64 > ./cc-test-reporter && chmod +x ./cc-test-reporter
-          ./cc-test-reporter before-build
-
       - name: Run Tests
         run: |
           php vendor/bin/phpunit --coverage-clover coverage.xml --configuration phpunit.xml tests
