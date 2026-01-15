@@ -3,6 +3,8 @@
 namespace Terremoth\AsyncTest;
 
 use PHPUnit\Framework\TestCase;
+use ReflectionException;
+use ReflectionMethod;
 use Symfony\Component\Process\Process as SymfonyProcess;
 use Terremoth\Async\PhpFile;
 use InvalidArgumentException;
@@ -169,5 +171,24 @@ class PhpFileTest extends TestCase
                 unlink($tempFile);
             }
         }
+    }
+
+    /**
+     * @throws ReflectionException
+     * @throws \PHPUnit\Framework\MockObject\Exception
+     * @throws Exception
+     */
+    public function testStartProcessDelegatesToSymfonyProcess(): void
+    {
+        $tempFile = $this->makeFile('dummy_process.php', '<?php');
+        $phpFile = new PhpFile($tempFile);
+
+        $symfonyProcessMock = $this->createMock(SymfonyProcess::class);
+
+        $symfonyProcessMock->expects($this->once())
+            ->method('start');
+
+        $reflectionMethod = new ReflectionMethod(PhpFile::class, 'startProcess');
+        $reflectionMethod->invoke($phpFile, $symfonyProcessMock);
     }
 }
