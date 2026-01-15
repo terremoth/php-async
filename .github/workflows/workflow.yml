@@ -3,14 +3,10 @@ name: Complete Workflow
 on:
   push:
     paths:
-      - '**/*.php'
-      - '**/*.css'
-      - '**/*.js'
+      - '**/*.*'
   pull_request:
     paths:
-      - '**/*.php'
-      - '**/*.css'
-      - '**/*.js'
+      - '**/*.*'
 
 jobs:
   run:
