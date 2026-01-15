@@ -4,10 +4,8 @@ Pcntl or Swoole.
 
 Just raw PHP! It is magic! This is **not** the classical meaning of async like python's or nodejs you're addicted to hear. This is more like an "Async Process", or "Async Multitasking", but you can achieve the same results you expect. Enjoy.
 
-<!--
-[![codecov](https://codecov.io/gh/terremoth/php-async/graph/badge.svg?token=W37V5EDERQ)](https://codecov.io/gh/terremoth/php-async)
-[![Test Coverage](https://api.codeclimate.com/v1/badges/c6420e5f6ab01e70eed7/test_coverage)](https://codeclimate.com/github/terremoth/php-async/test_coverage)
--->
+<div align="center">  
+    
 [![codecov](https://codecov.io/gh/terremoth/php-async/graph/badge.svg?token=W37V5EDERQ)](https://codecov.io/gh/terremoth/php-async)
 [![Code Coverage](https://qlty.sh/gh/terremoth/projects/php-async/coverage.svg)](https://qlty.sh/gh/terremoth/projects/php-async)
 [![Psalm type coverage](https://shepherd.dev/github/terremoth/php-async/coverage.svg)](https://shepherd.dev/github/terremoth/php-async)
@@ -16,7 +14,12 @@ Just raw PHP! It is magic! This is **not** the classical meaning of async like p
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/478adadc949c43b090fb22417e832326)](https://app.codacy.com/gh/terremoth/php-async/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Maintainability](https://qlty.sh/gh/terremoth/projects/php-async/maintainability.svg)](https://qlty.sh/gh/terremoth/projects/php-async)
 [![License](https://img.shields.io/github/license/terremoth/php-async.svg?logo=mit&color=41bb13)](https://github.com/terremoth/php-async/blob/main/LICENSE)
+[![Latest Stable Version](https://poser.pugx.org/terremoth/php-async/v/stable)](https://packagist.org/packages/terremoth/php-async)
+[![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdiscord.com%2Fapi%2Finvites%2FJxFhMVWu82%3Fwith_counts%3Dtrue&query=%24.approximate_member_count&logo=discord&logoColor=white&label=Users%20Total&color=green)](https://discord.gg/JxFhMVWu82)
 ![Packagist Downloads](https://img.shields.io/packagist/dt/terremoth/php-async?color=41bb13)
+
+</div>
+
 
 ### Target Audience
 For those who, for some reason, cannot or don't want to use Swoole or Parallel
