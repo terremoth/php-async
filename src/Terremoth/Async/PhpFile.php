@@ -11,7 +11,7 @@ readonly class PhpFile
     /**
      * @param string $file
      * @throws Exception
-     * @param array<array-key, null>|list{int} $args
+     * @param list<string> $args
      */
     public function __construct(private string $file, private array $args = [])
     {
