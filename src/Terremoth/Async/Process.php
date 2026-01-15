@@ -14,7 +14,7 @@ class Process
     public function __construct(private int $shmopKey = 0)
     {
         if (!$this->shmopKey) {
-            $this->shmopKey = mt_rand(0, self::MAX_INT); // communication key
+            $this->shmopKey = mt_rand(0, self::MAX_INT);
         }
     }
 
@@ -31,10 +31,14 @@ class Process
         });
 
         try {
-            $shmopInstance = shmop_open($this->shmopKey, 'n', 0660, $length);
+            try {
+                $shmopInstance = $this->openShmop($this->shmopKey, 'n', 0660, $length);
+            } catch (Exception) {
+                $shmopInstance = false;
+            }
 
             if ($shmopInstance === false) {
-                $existing = shmop_open($this->shmopKey, 'a', 0660, 0);
+                $existing = $this->openShmop($this->shmopKey, 'a', 0660, 0);
 
                 if ($existing === false) {
                     throw new Exception(
@@ -42,13 +46,13 @@ class Process
                     );
                 }
 
-                if (shmop_delete($existing) === false) {
+                if ($this->deleteShmop($existing) === false) {
                     throw new Exception(
                         'Could not delete existing shmop instance with key: ' . $this->shmopKey
                     );
                 }
 
-                $shmopInstance = shmop_open($this->shmopKey, 'c', 0660, $length);
+                $shmopInstance = $this->openShmop($this->shmopKey, 'c', 0660, $length);
 
                 if ($shmopInstance === false) {
                     throw new Exception(
@@ -62,7 +66,7 @@ class Process
 
         $bytesWritten = $this->writeToShmop($shmopInstance, $serialized, 0);
 
-        if ((bool)$bytesWritten === false) {
+        if ($bytesWritten === false) {
             throw new Exception(
                 'shmop_write failed when writing to shared memory with key: ' . $this->shmopKey
             );
@@ -71,7 +75,7 @@ class Process
         if ($bytesWritten !== $length) {
             throw new Exception(
                 'Could not write all bytes to shared memory. Expected: '
-                . $length . ', Written: ' . (int)$bytesWritten
+                . $length . ', Written: ' . $bytesWritten
             );
         }
 
@@ -83,14 +87,18 @@ class Process
         $file->run();
     }
 
-    /**
-     * @param Shmop $shmopInstance
-     * @param string $data
-     * @param int $offset
-     * @return int|false
-     */
     protected function writeToShmop(Shmop $shmopInstance, string $data, int $offset): int|false
     {
         return shmop_write($shmopInstance, $data, $offset);
+    }
+
+    protected function openShmop(int $key, string $mode, int $permissions, int $size): Shmop|false
+    {
+        return shmop_open($key, $mode, $permissions, $size);
+    }
+
+    protected function deleteShmop(Shmop $shmopInstance): bool
+    {
+        return shmop_delete($shmopInstance);
     }
 }

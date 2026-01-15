@@ -4,6 +4,7 @@ namespace Terremoth\AsyncTest;
 
 use PHPUnit\Framework\TestCase;
 use Random\RandomException;
+use Shmop;
 use Terremoth\Async\Process;
 use Exception;
 use Laravel\SerializableClosure\SerializableClosure;
@@ -26,20 +27,15 @@ class ProcessTest extends TestCase
     public function testConstructorGeneratesRandomKeyWhenZero(): void
     {
         $process = new Process(0);
-
         $ref = new ReflectionProperty(Process::class, 'shmopKey');
-
         $key = intval($ref->getValue($process));
-
         $this->assertGreaterThan(0, $key);
     }
 
     public function testConstructorKeepsProvidedKey(): void
     {
         $process = new Process(12345);
-
         $reflection = new ReflectionProperty(Process::class, 'shmopKey');
-
         $this->assertSame(12345, $reflection->getValue($process));
     }
 
@@ -53,7 +49,7 @@ class ProcessTest extends TestCase
         $process = new Process($key);
 
         $closure = function (): int {
-            return (3 * 2 + 34 | 2 ^ 1) - 1; // this is whatever, just for phpmd stops crying, the result is 42
+            return 42;
         };
 
         $process->send($closure);
@@ -69,10 +65,7 @@ class ProcessTest extends TestCase
         $unserialized = unserialize($data);
         $this->assertInstanceOf(SerializableClosure::class, $unserialized);
 
-        $unserialized->getClosure();
-
-        // shmop_delete($shmop);
-        // shmop_close($shmop); // deprecated
+        //shmop_delete($shmop);
     }
 
     /**
@@ -93,29 +86,68 @@ class ProcessTest extends TestCase
             ->willReturn(10);
 
         $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Could not write all bytes');
 
-        $process->send(function () {
-        });
+        $process->send(fn() => true);
+    }
+
+    public function testSendThrowsExceptionWhenWriteFailsCompletely(): void
+    {
+        $key = 123456;
+        $process = $this->getMockBuilder(Process::class)
+            ->setConstructorArgs([$key])
+            ->onlyMethods(['writeToShmop'])
+            ->getMock();
+
+        $process->expects($this->once())
+            ->method('writeToShmop')
+            ->willReturn(false);
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('shmop_write failed');
+
+        $process->send(fn() => true);
     }
 
     /**
-     * @throws RandomException
      * @throws Exception
      */
-    public function testSendDoesNotThrowOnSuccess(): void
+    public function testSendHandlesShmopCollisionAndRecreation(): void
     {
-        $key = ftok(__FILE__, 'c') ?: random_int(1, 1000000);
+        $key = 987654;
 
-        $process = new Process($key);
+        $process = $this->getMockBuilder(Process::class)
+            ->setConstructorArgs([$key])
+            ->onlyMethods(['openShmop', 'deleteShmop', 'writeToShmop'])
+            ->getMock();
 
-        $process->send(function (): int {
-            return 42;
-        });
+        $process->expects($this->exactly(3))
+            ->method('openShmop')
+            ->willReturnCallback(function (int $key, string $mode) {
+                unset($key);
+                if ($mode === 'n') {
+                    throw new Exception('shmop already exists');
+                }
 
-        $shmop = shmop_open($key, 'a', 0, 0);
-        $this->assertNotFalse($shmop, 'Shared memory should exist after send');
+                $tempKey = random_int(1000000, 9999999);
+                $dummyShmop = shmop_open($tempKey, 'c', 0660, 1);
 
-        $size = shmop_size($shmop);
-        $this->assertGreaterThan(0, $size, 'Shared memory should contain data');
+                $this->assertTrue(shmop_delete($dummyShmop));
+
+                return $dummyShmop;
+            });
+
+        $process->expects($this->once())
+            ->method('deleteShmop')
+            ->willReturn(true);
+
+        $process->expects($this->once())
+            ->method('writeToShmop')
+            ->willReturnCallback(function (Shmop $shmop, string $data) {
+                unset($shmop);
+                return mb_strlen($data);
+            });
+
+        $process->send(fn() => 'test');
     }
 }
