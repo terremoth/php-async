@@ -32,11 +32,13 @@ jobs:
         run: |
           php vendor/bin/phpunit --coverage-clover coverage.xml --configuration phpunit.xml tests
       
+      - name: Download clover-to-cobertura converter
+        run: |
+          curl https://raw.githubusercontent.com/ngyuki/clover-to-cobertura/master/clover-to-cobertura.php -o clover-to-cobertura.php
+
       - name: Convert Clover to Cobertura
-        uses: actions/setup-node@v3
-        with:
-          node-version: 20
-      - run: npx clover-to-cobertura ./coverage.xml > ./coverage-cobertura.xml
+        run: |
+          php clover-to-cobertura.php < coverage.xml > coverage-cobertura.xml
 
       - uses: qltysh/qlty-action/coverage@v2
         with:
