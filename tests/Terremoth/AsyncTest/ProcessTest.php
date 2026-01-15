@@ -118,28 +118,27 @@ class ProcessTest extends TestCase
 
         $process = $this->getMockBuilder(Process::class)
             ->setConstructorArgs([$key])
-            ->onlyMethods(['openShmop', 'deleteShmop', 'writeToShmop'])
+            ->onlyMethods(['openShmop', 'writeToShmop'])
             ->getMock();
 
         $process->expects($this->exactly(3))
             ->method('openShmop')
-            ->willReturnCallback(function (int $key, string $mode) {
-                unset($key);
+            ->willReturnCallback(function (int $k, string $mode) {
+                unset($k);
                 if ($mode === 'n') {
                     throw new Exception('shmop already exists');
                 }
 
                 $tempKey = random_int(1000000, 9999999);
-                $dummyShmop = shmop_open($tempKey, 'c', 0660, 1);
+                $dummy = shmop_open($tempKey, 'c', 0660, 1);
 
-                $this->assertTrue(shmop_delete($dummyShmop));
+                if ($mode === 'c') {
+                    $this->assertTrue(shmop_delete($dummy));
+                }
 
-                return $dummyShmop;
+                return $dummy;
             });
 
-        $process->expects($this->once())
-            ->method('deleteShmop')
-            ->willReturn(true);
 
         $process->expects($this->once())
             ->method('writeToShmop')
@@ -149,5 +148,125 @@ class ProcessTest extends TestCase
             });
 
         $process->send(fn() => 'test');
+    }
+
+    public function testSendThrowsExceptionWhenExistingShmopCannotBeAccessed(): void
+    {
+        $process = $this->getMockBuilder(Process::class)
+            ->onlyMethods(['openShmop'])
+            ->getMock();
+
+        $process->expects($this->exactly(2))
+            ->method('openShmop')
+            ->willReturnCallback(function (int $key, string $mode) {
+                unset($key);
+                if ($mode === 'n') {
+                    throw new Exception('Simulated creation failure');
+                }
+                if ($mode === 'a') {
+                    return false;
+                }
+                return false;
+            });
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Could not access existing shmop instance');
+
+        $process->send(fn() => true);
+    }
+
+    public function testSendThrowsExceptionWhenExistingShmopCannotBeDeleted(): void
+    {
+        $process = $this->getMockBuilder(Process::class)
+            ->onlyMethods(['openShmop', 'deleteShmop'])
+            ->getMock();
+
+        $process->expects($this->exactly(2))
+            ->method('openShmop')
+            ->willReturnCallback(function (int $k, string $mode) {
+                unset($k);
+                if ($mode === 'n') {
+                    throw new Exception('Simulated creation failure');
+                }
+
+                $tempKey = random_int(1000000, 9999999);
+                $dummy = shmop_open($tempKey, 'c', 0660, 1);
+
+                // Fix: Usa o retorno para satisfazer o Psalm e limpa a memória
+                $this->assertTrue(shmop_delete($dummy));
+
+                return $dummy;
+            });
+
+        $process->expects($this->once())
+            ->method('deleteShmop')
+            ->willReturn(false);
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Could not delete existing shmop instance');
+
+        $process->send(fn() => true);
+    }
+
+    public function testSendThrowsExceptionWhenShmopCannotBeRecreated(): void
+    {
+        $process = $this->getMockBuilder(Process::class)
+            ->onlyMethods(['openShmop', 'deleteShmop'])
+            ->getMock();
+
+        $process->expects($this->exactly(3))
+            ->method('openShmop')
+            ->willReturnCallback(function (int $k, string $mode) {
+                unset($k);
+                if ($mode === 'n') {
+                    throw new Exception('Simulated creation failure');
+                }
+                if ($mode === 'c') {
+                    return false;
+                }
+
+                $tempKey = random_int(1000000, 9999999);
+                $dummy = shmop_open($tempKey, 'c', 0660, 1);
+
+                // Fix: Usa o retorno para satisfazer o Psalm e limpa a memória
+                $this->assertTrue(shmop_delete($dummy));
+
+                return $dummy;
+            });
+
+        $process->expects($this->once())
+            ->method('deleteShmop')
+            ->willReturn(true);
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Could not recreate shmop instance');
+
+        $process->send(fn() => true);
+    }
+
+    public function testErrorHandlerCapturesWarnings(): void
+    {
+        $process = $this->getMockBuilder(Process::class)
+            ->onlyMethods(['openShmop'])
+            ->getMock();
+
+        $process->expects($this->exactly(2))
+            ->method('openShmop')
+            ->willReturnCallback(function (int $key, string $mode) {
+                unset($key);
+                if ($mode === 'n') {
+                    throw new Exception('First failure');
+                }
+                if ($mode === 'a') {
+                    trigger_error('Native shmop warning', E_USER_WARNING);
+                    return false;
+                }
+                return false;
+            });
+
+        $this->expectException(Exception::class);
+        $this->expectExceptionMessage('Native shmop warning');
+
+        $process->send(fn() => true);
     }
 }
