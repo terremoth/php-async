@@ -31,11 +31,17 @@ jobs:
       - name: Run Tests
         run: |
           php vendor/bin/phpunit --coverage-clover coverage.xml --configuration phpunit.xml tests
-          
+      
+      - name: Convert Clover to Cobertura
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+      - run: npx clover-to-cobertura ./coverage.xml > ./coverage-cobertura.xml
+
       - uses: qltysh/qlty-action/coverage@v2
         with:
           token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
-          files: ./coverage.xml
+          files: ./coverage-cobertura.xml
     
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
