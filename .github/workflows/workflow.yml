@@ -31,7 +31,12 @@ jobs:
       - name: Run Tests
         run: |
           php vendor/bin/phpunit --coverage-clover coverage.xml --configuration phpunit.xml tests
-       
+          
+      - uses: qltysh/qlty-action/coverage@v2
+        with:
+          token: ${{ secrets.QLTY_COVERAGE_TOKEN }}
+          files: ./coverage.xml
+    
       - name: Upload test results to Codecov
         if: ${{ !cancelled() }}
         uses: codecov/test-results-action@v1
