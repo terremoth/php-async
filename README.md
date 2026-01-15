@@ -13,7 +13,7 @@ Just raw PHP! It is magic! This is **not** the classical meaning of async like p
 [![Test Run Status](https://github.com/terremoth/php-async/actions/workflows/workflow.yml/badge.svg?branch=main)](https://github.com/terremoth/php-async/actions/workflows/workflow.yml)
 [![Codacy Badge](https://app.codacy.com/project/badge/Grade/478adadc949c43b090fb22417e832326)](https://app.codacy.com/gh/terremoth/php-async/dashboard?utm_source=gh&utm_medium=referral&utm_content=&utm_campaign=Badge_grade)
 [![Maintainability](https://qlty.sh/gh/terremoth/projects/php-async/maintainability.svg)](https://qlty.sh/gh/terremoth/projects/php-async)
-[![License](https://img.shields.io/github/license/terremoth/php-async.svg?logo=mit&color=41bb13)](https://github.com/terremoth/php-async/blob/main/LICENSE)
+[![License](https://img.shields.io/github/license/terremoth/php-async.svg?logo=lgpl&color=41bb13)](https://github.com/terremoth/php-async/blob/main/LICENSE)
 [![Latest Stable Version](https://poser.pugx.org/terremoth/php-async/v/stable)](https://packagist.org/packages/terremoth/php-async)
 [![Dynamic JSON Badge](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fdiscord.com%2Fapi%2Finvites%2FJxFhMVWu82%3Fwith_counts%3Dtrue&query=%24.approximate_member_count&logo=discord&logoColor=white&label=Users%20Total&color=green)](https://discord.gg/JxFhMVWu82)
 ![Packagist Downloads](https://img.shields.io/packagist/dt/terremoth/php-async?color=41bb13)
